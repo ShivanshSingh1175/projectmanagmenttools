@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
  * ActivityLog Model Class - Tracks all user activities in the system
  */
 public class ActivityLog implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public enum ActivityType {

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
  * Encapsulates user data and provides getters/setters
  */
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public enum UserRole {

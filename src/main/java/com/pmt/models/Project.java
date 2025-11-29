@@ -11,6 +11,7 @@ import java.util.List;
  * Uses Collections to manage project members and tasks
  */
 public class Project implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public enum ProjectStatus {

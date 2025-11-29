@@ -18,6 +18,7 @@ import java.util.List;
  */
 @WebServlet("/admin-dashboard")
 public class AdminDashboardServlet extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     private UserService userService;
 

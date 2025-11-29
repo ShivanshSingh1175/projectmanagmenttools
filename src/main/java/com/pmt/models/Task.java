@@ -11,6 +11,7 @@ import java.util.List;
  * Implements Serializable for session management
  */
 public class Task implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public enum TaskStatus {

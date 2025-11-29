@@ -20,6 +20,7 @@ import java.util.List;
  */
 @WebServlet("/pm-dashboard")
 public class ProjectManagerDashboardServlet extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     private ProjectService projectService;
     private TaskService taskService;

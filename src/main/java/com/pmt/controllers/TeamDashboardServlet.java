@@ -17,6 +17,7 @@ import java.util.List;
  */
 @WebServlet("/team-dashboard")
 public class TeamDashboardServlet extends HttpServlet {
+    @Serial
     private static final long serialVersionUID = 1L;
     private TaskService taskService;
 

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
  * Notification Model Class - Represents system notifications
  */
 public class Notification implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public enum NotificationType {

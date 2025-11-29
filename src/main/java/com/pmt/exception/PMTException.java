@@ -5,6 +5,7 @@ package com.pmt.exception;
  * Follows OOP abstraction principle
  */
 public class PMTException extends Exception {
+    @Serial
     private static final long serialVersionUID = 1L;
     protected String errorCode;
     protected int statusCode;
@@ -44,6 +45,7 @@ public class PMTException extends Exception {
  * Custom Exception for Database operations
  */
 class DatabaseException extends PMTException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public DatabaseException(String message) {
@@ -61,6 +63,7 @@ class DatabaseException extends PMTException {
  * Custom Exception for Authentication failures
  */
 class AuthenticationException extends PMTException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public AuthenticationException(String message) {
@@ -72,6 +75,7 @@ class AuthenticationException extends PMTException {
  * Custom Exception for Authorization failures
  */
 class AuthorizationException extends PMTException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public AuthorizationException(String message) {
@@ -83,6 +87,7 @@ class AuthorizationException extends PMTException {
  * Custom Exception for Resource not found
  */
 class ResourceNotFoundException extends PMTException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public ResourceNotFoundException(String message) {
@@ -94,6 +99,7 @@ class ResourceNotFoundException extends PMTException {
  * Custom Exception for Validation errors
  */
 class ValidationException extends PMTException {
+    @Serial
     private static final long serialVersionUID = 1L;
 
     public ValidationException(String message) {
