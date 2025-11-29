@@ -1,5 +1,6 @@
 package com.pmt.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
