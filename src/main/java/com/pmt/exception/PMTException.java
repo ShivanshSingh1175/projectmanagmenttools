@@ -1,5 +1,7 @@
 package com.pmt.exception;
 
+import java.io.Serial;
+
 /**
  * Custom Exception for Application-specific errors
  * Follows OOP abstraction principle
