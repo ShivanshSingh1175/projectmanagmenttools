@@ -15,6 +15,7 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
+        <app.port>8080</app.port>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -74,6 +75,12 @@
             <artifactId>tomcat-jasper</artifactId>
             <version>10.1.13</version>
         </dependency>
+        <!-- ASM: ensure support for Java 21 class file parsing (major version 65) -->
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.5</version>
+        </dependency>
         <!-- Jetty embedded dependencies for local runner -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -107,6 +114,12 @@
             <version>10.0.13</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Ensure Jetty annotation/configuration modules available -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-annotations</artifactId>
+            <version>10.0.13</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -119,6 +132,26 @@
                 <configuration>
                     <release>21</release>
                 </configuration>
+            </plugin>
+
+            <!-- Ensure dependencies are copied for the runner scripts -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                            <includeScope>runtime</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Maven WAR Plugin -->
