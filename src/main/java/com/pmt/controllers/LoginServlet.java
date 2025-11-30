@@ -32,13 +32,33 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Redirect to login.jsp
-        request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
+        System.out.println("[DEBUG][LoginServlet] GET " + request.getRequestURI());
+        // Prefer forwarding to JSP only if a JSP servlet is available at runtime; otherwise return a fallback HTML page
+        try {
+            Class.forName("org.eclipse.jetty.jsp.JettyJspServlet");
+            // JSP available; try to forward
+            if (getServletContext().getResource("/jsp/login.jsp") != null) {
+                request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
+                return;
+            }
+        } catch (ClassNotFoundException ignored) {
+            // JSP not available; use fallback HTML
+        }
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().write("<!doctype html><html><head><meta charset='utf-8'><title>Login</title></head><body>\n");
+        response.getWriter().write("<h2>Login (fallback)</h2>\n");
+        response.getWriter().write("<form method='post' action='" + request.getContextPath() + "/login'>\n");
+        response.getWriter().write("<label>Email: <input name='email' type='email'></label><br/>\n");
+        response.getWriter().write("<label>Password: <input name='password' type='password'></label><br/>\n");
+        response.getWriter().write("<button type='submit'>Login</button>\n");
+        response.getWriter().write("</form></body></html>");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("[DEBUG][LoginServlet] POST " + request.getRequestURI());
         
         String email = request.getParameter("email");
         String password = request.getParameter("password");

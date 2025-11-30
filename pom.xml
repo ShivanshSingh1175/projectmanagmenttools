@@ -24,7 +24,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- JSP API -->
@@ -32,7 +32,7 @@
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
             <version>2.3.3</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- JSTL (JavaServer Pages Standard Tag Library) -->
@@ -68,6 +68,45 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.36</version>
         </dependency>
+        <!-- Apache JSP engine (Jasper) for JSP rendering in embedded Jetty -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper</artifactId>
+            <version>10.1.13</version>
+        </dependency>
+        <!-- Jetty embedded dependencies for local runner -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>10.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>10.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>10.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlets</artifactId>
+            <version>10.0.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-plus</artifactId>
+            <version>10.0.13</version>
+        </dependency>
+        <!-- JSP support for embedded Jetty -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>apache-jsp</artifactId>
+            <version>10.0.13</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -92,11 +131,13 @@
                 </configuration>
             </plugin>
 
-            <!-- Jetty Plugin for running locally -->
+            <!-- Jetty Plugin for running locally (use Jetty 10 with annotation scanning disabled)
+                 Annotation scanning is disabled because the Jetty ASM version bundled in some Jetty
+                 releases cannot parse Java 21 class files. We rely on `web.xml` mappings instead. -->
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>11.0.15</version>
+                <version>10.0.13</version>
                 <configuration>
                     <scanIntervalSeconds>10</scanIntervalSeconds>
                     <webApp>
@@ -107,6 +148,28 @@
                     </httpConnector>
                     <stopKey>STOP</stopKey>
                     <stopPort>8081</stopPort>
+                    <!-- Configure webapp to use explicit configuration classes and omit AnnotationConfiguration -->
+                    <webAppConfig>
+                        <configurationClasses>
+                            <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
+                            <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</configurationClass>
+                            <!-- AnnotationConfiguration intentionally omitted to avoid scanning compiled classes -->
+                        </configurationClasses>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+            <!-- Exec plugin to run embedded Jetty runner -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <mainClass>com.pmt.runner.EmbeddedJettyRunner</mainClass>
                 </configuration>
             </plugin>
         </plugins>
