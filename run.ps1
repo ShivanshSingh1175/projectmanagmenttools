@@ -3,10 +3,20 @@ param(
 )
 
 Write-Host "Building project and copying runtime dependencies..."
-& mvn -DskipTests=true clean package
+# Try to find mvn on PATH, otherwise fall back to the user's maven install if present
+if (Get-Command mvn -ErrorAction SilentlyContinue) {
+    $mvnCmd = 'mvn'
+} elseif (Test-Path "$env:USERPROFILE\.maven\maven-3.9.11\bin\mvn.cmd") {
+    $mvnCmd = Join-Path $env:USERPROFILE ".maven\maven-3.9.11\bin\mvn.cmd"
+} else {
+    Write-Error "Maven not found in PATH and no fallback detected. Please install Maven or add it to PATH."
+    exit 1
+}
+
+& $mvnCmd -DskipTests=true clean package
 
 Write-Host "Copying dependencies to target/dependency (if not already present)..."
-& mvn dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/dependency
+& $mvnCmd dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/dependency
 
 $root = Resolve-Path .
 $jars = Get-ChildItem -Path "$root\target\dependency" -Filter '*.jar' -File | ForEach-Object { $_.FullName }

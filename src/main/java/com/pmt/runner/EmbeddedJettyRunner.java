@@ -16,7 +16,8 @@ public class EmbeddedJettyRunner {
         webapp.setContextPath("/");
         webapp.setDescriptor("src/main/webapp/WEB-INF/web.xml");
         webapp.setResourceBase("src/main/webapp");
-        webapp.setParentLoaderPriority(true);
+        // Let the webapp classloader take precedence so webapp/JSP classes and jars are resolved correctly
+        webapp.setParentLoaderPriority(false);
         // Disable default webapp descriptor to avoid loading jetty's webdefault.xml listeners
         webapp.setDefaultsDescriptor(null);
 
@@ -37,13 +38,18 @@ public class EmbeddedJettyRunner {
             System.out.println("[WARN] Could not register JSP servlet: " + t.getMessage());
         }
 
+        // Do not forcibly register DefaultServlet here; the webapp's `web.xml` already defines static
+        // resource mappings. Registering another servlet for the same paths causes startup failures
+        // (Multiple servlets map to the same path). If the app's web.xml lacks a DefaultServlet,
+        // we can add one later conditionally.
+
         // Use explicit configuration classes and omit AnnotationConfiguration to avoid scanning compiled classes
+        // Use explicit configuration classes and omit Jetty's annotation scanning initializer
         webapp.setConfigurationClasses(new String[] {
             "org.eclipse.jetty.webapp.WebInfConfiguration",
             "org.eclipse.jetty.webapp.WebXmlConfiguration",
             "org.eclipse.jetty.webapp.MetaInfConfiguration",
             "org.eclipse.jetty.webapp.FragmentConfiguration",
-            "org.eclipse.jetty.apache.jsp.JettyJasperInitializer",
             "org.eclipse.jetty.plus.webapp.EnvConfiguration",
             "org.eclipse.jetty.plus.webapp.PlusConfiguration",
             "org.eclipse.jetty.webapp.JettyWebXmlConfiguration"
