@@ -16,6 +16,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <app.port>8080</app.port>
+        <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -130,7 +131,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.1</version>
                 <configuration>
-                    <release>21</release>
+                    <release>${java.version}</release>
                 </configuration>
             </plugin>
 
@@ -207,4 +208,28 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Quick compatibility profile: compile for Java 17 -->
+        <profile>
+            <id>jdk17-compat</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>17</java.version>
+            </properties>
+        </profile>
+
+        <!-- Long-term profile: use Java 21 (default) -->
+        <profile>
+            <id>jdk21</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>21</java.version>
+            </properties>
+        </profile>
+    </profiles>
 </project>

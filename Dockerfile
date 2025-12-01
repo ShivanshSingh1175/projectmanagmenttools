@@ -1,10 +1,11 @@
-FROM eclipse-temurin:21-jdk-focal
+ARG BASE_IMAGE=eclipse-temurin:17-jdk-focal
+FROM ${BASE_IMAGE}
 WORKDIR /app
 ARG WAR_FILE=target/ProjectManagementTool-1.0.0.war
 COPY ${WAR_FILE} /app/ROOT.war
 EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD curl -f http://localhost:8080/pmt-health || exit 1
-CMD ["sh", "-c", "java -Dapp.port=8080 -jar /app/ROOT.war"]
+CMD ["sh", "-c", "java -Dapp.port=${APP_PORT:-8080} -jar /app/ROOT.war"]
 # Dockerfile: Tomcat 9 running on Java 21 (Eclipse Temurin)
 # Builds a Tomcat install inside the image and deploys the WAR as ROOT.war
 

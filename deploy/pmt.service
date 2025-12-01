@@ -1,0 +1,14 @@
+[Unit]
+Description=ProjectManagementTool Java App
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/opt/pmt
+ExecStart=/usr/bin/java -Dapp.port=${APP_PORT:-8080} -cp "/opt/pmt/target/classes:/opt/pmt/target/dependency/*" com.pmt.runner.EmbeddedJettyRunner
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
